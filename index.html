@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="utf-8">
@@ -57,15 +56,15 @@ function floatText(x,y,t,c){
 function showCombo(){
   if(streak>=3){combo.textContent='🔥 '+streak+' تا پشت‌سرهم!';combo.style.opacity=1}else{combo.style.opacity=0}
 }
-function speed(){return 1-0.6((30-left)/30)}
+function speed(){return 1-0.6*((30-left)/30)}
 function spawn(){
   if(!run)return;
   var bad=Math.random()<0.14,gold=!bad&&Math.random()<0.12;
   var el=document.createElement('div');
   el.className='item';
   el.textContent=bad?'✂️':(gold?'🌟':'🧶');
-  el.style.left=Math.random()(field.clientWidth-84)+'px';
-  el.style.animationDuration=((3.4+Math.random()1.6)speed())+'s';
+  el.style.left=Math.random()*(field.clientWidth-84)+'px';
+  el.style.animationDuration=((3.4+Math.random()*1.6)*speed())+'s';
   el.addEventListener('pointerdown',function(e){
     e.preventDefault();
     if(!run||el.dataset.done)return;
@@ -87,7 +86,7 @@ function spawn(){
   });
   el.addEventListener('animationend',function(e){if(e.animationName==='fall'){if(!bad&&!el.dataset.done){streak=0;showCombo()}el.remove()}});
   field.appendChild(el);
-  spawnT=setTimeout(spawn,(380+Math.random()260)speed());
+  spawnT=setTimeout(spawn,(380+Math.random()*260)*speed());
 }
 function rank(s){
   if(s>=60)return '👑 ملکه‌ی نخ';
