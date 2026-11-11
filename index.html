@@ -2,13 +2,13 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>گلوله نخ بگیر</title>
 <style>
 :root{--bg:#fff4ec;--fg:#4a2c2a;--card:#ffe3d1;--card2:#fff;--accent:#e4572e;--bar:#ffb03b;color-scheme:light}
 @media (prefers-color-scheme:dark){:root{--bg:#241716;--fg:#ffe9dc;--card:#3a2422;--card2:#4a2c2a;--accent:#ff8a5c;--bar:#ffb03b;color-scheme:dark}}
 html,body{height:100%;margin:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font-family:Tahoma,system-ui,sans-serif;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);display:flex;flex-direction:column;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+body{background:var(--bg);color:var(--fg);font-family:Tahoma,system-ui,sans-serif;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);display:flex;flex-direction:column;user-select:none;-webkit-user-select:none;touch-action:none;overscroll-behavior:none}
 header{display:flex;gap:10px;padding:12px 14px 6px}
 .chip{flex:1;background:var(--card2);border-radius:16px;padding:8px 12px;text-align:center;font-size:15px;box-shadow:0 2px 6px rgba(0,0,0,.08)}
 .chip b{display:block;font-size:24px;line-height:1.2}
@@ -111,7 +111,7 @@ function spawn(){
   spawnT=setTimeout(spawn,(380+Math.random()*260)*speed());
 }
 function rank(s){
-  if(s>=90)return '👑 ملکه‌ی نخ';
+  if(s>=115)return '👑 ملکه‌ی نخ';
   if(s>=65)return '🧵 استاد حلقه';
   if(s>=35)return '🧶 کاشف نخ';
   return '🐣 تازه‌کار';
@@ -131,6 +131,10 @@ function begin(){
   step=0;music();spawn();
   clockT=setInterval(function(){left--;tm.textContent=left;fill.style.width=(left/30*100)+'%';if(left<=0)end()},1000);
 }
+['gesturestart','gesturechange','gestureend','dblclick'].forEach(function(n){document.addEventListener(n,function(e){e.preventDefault()},{passive:false})});
+document.addEventListener('touchmove',function(e){e.preventDefault()},{passive:false});
+var lastTap=0;
+document.addEventListener('touchend',function(e){var n=Date.now();if(n-lastTap<350)e.preventDefault();lastTap=n},{passive:false});
 document.getElementById('start').onclick=begin;
 document.getElementById('mute').onclick=function(){muted=!muted;this.textContent=muted?'🔇':'🔊'};
 </script>
