@@ -33,6 +33,7 @@ h1{margin:0;font-size:28px}p{margin:0;line-height:1.9;font-size:16px}
 <header>
   <div class="chip">🧶 امتیاز<b id="score">0</b></div>
   <div class="chip">⏱ زمان<b id="time">30</b></div>
+  <div class="chip" id="mute" style="flex:0 0 56px;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center">🔊</div>
 </header>
 <div id="bar"><div id="fill"></div></div>
 <div id="field">
@@ -57,6 +58,27 @@ function showCombo(){
   if(streak>=3){combo.textContent='🔥 '+streak+' تا پشت‌سرهم!';combo.style.opacity=1}else{combo.style.opacity=0}
 }
 function speed(){return 1-0.6*((30-left)/30)}
+var ac,musicT,step=0,muted=false;
+var notes=[220,220,261.63,220,233.08,220,196,207.65];
+function note(f,d,type,v){
+  var o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime;
+  o.type=type;o.frequency.value=f;
+  g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+  o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+d);
+}
+function music(){
+  if(!run)return;
+  if(!muted&&ac){
+    try{
+      var m=left<=10?1.5:1;
+      note(notes[step%8]*m,0.12,'square',0.05);
+      if(step%2===0)note(55,0.16,'sawtooth',0.09);
+      if(step%4===3)note(notes[step%8]*2,0.05,'triangle',0.04);
+    }catch(e){}
+  }
+  step++;
+  musicT=setTimeout(music,240*speed());
+}
 function spawn(){
   if(!run)return;
   var bad=Math.random()<0.14,gold=!bad&&Math.random()<0.12;
@@ -89,13 +111,13 @@ function spawn(){
   spawnT=setTimeout(spawn,(380+Math.random()*260)*speed());
 }
 function rank(s){
-  if(s>=60)return '👑 ملکه‌ی نخ';
-  if(s>=40)return '🧵 استاد حلقه';
-  if(s>=20)return '🧶 کاشف نخ';
+  if(s>=90)return '👑 ملکه‌ی نخ';
+  if(s>=65)return '🧵 استاد حلقه';
+  if(s>=35)return '🧶 کاشف نخ';
   return '🐣 تازه‌کار';
 }
 function end(){
-  run=false;clearTimeout(spawnT);clearInterval(clockT);
+  run=false;clearTimeout(spawnT);clearTimeout(musicT);clearInterval(clockT);
   document.querySelectorAll('.item').forEach(function(n){n.remove()});
   combo.style.opacity=0;
   panel.style.display='flex';
@@ -104,10 +126,13 @@ function end(){
 }
 function begin(){
   score=0;left=30;streak=0;sc.textContent=0;tm.textContent=30;fill.style.width='100%';
-  panel.style.display='none';run=true;spawn();
+  panel.style.display='none';run=true;
+  try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume()}catch(e){}
+  step=0;music();spawn();
   clockT=setInterval(function(){left--;tm.textContent=left;fill.style.width=(left/30*100)+'%';if(left<=0)end()},1000);
 }
 document.getElementById('start').onclick=begin;
+document.getElementById('mute').onclick=function(){muted=!muted;this.textContent=muted?'🔇':'🔊'};
 </script>
 </body>
 </html>
